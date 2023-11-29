@@ -24,7 +24,6 @@ def get_courses(sort_by: str = 'date', domain: str = None):
         sort_field = 'date'
         sort_order = -1
 
-    # sort_by == 'rating' [DESCENDING]
     elif sort_by == 'rating':
         sort_field = 'rating.total'
         sort_order = -1
@@ -42,11 +41,6 @@ def get_courses(sort_by: str = 'date', domain: str = None):
     return list(courses)
 
 
-"""
-Endpoint to get the course overview. 
-"""
-
-
 @app.get('/courses/{course_id}')
 def get_course(course_id: str):
     course = db.courses.find_one({'_id': ObjectId(course_id)}, {'_id': 0, 'chapters': 0})
@@ -59,10 +53,6 @@ def get_course(course_id: str):
 
     return course
 
-
-""" 
-Endpoint to get a specific chapter information.
-"""
 
 
 @app.get('/courses/{course_id}/{chapter_id}')
@@ -77,7 +67,6 @@ def get_chapter(course_id: str, chapter_id: str):
         raise HTTPException(status_code=404, detail='Chapter not found') from e
     return chapter
 
-#  to allow users to rate each chapter (positive/negative) 1 for Positive, -1 For Negative, while aggregating all ratings for each course.
 @app.post('/courses/{course_id}/{chapter_id}')
 def rate_chapter(course_id: str, chapter_id: str, rating: int = Query(..., gt=-2, lt=2)):
     course = db.courses.find_one({'_id': ObjectId(course_id)}, {'_id': 0, })
